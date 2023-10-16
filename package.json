@@ -1,0 +1,26 @@
+{
+  "name": "example_009",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve --open",
+    "watch": "webpack --watch",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.2",
+    "css-loader": "^6.8.1",
+    "html-webpack-plugin": "^5.5.3",
+    "mini-css-extract-plugin": "^2.7.6",
+    "ref-loader": "^1.0.3",
+    "svg-inline-loader": "^0.8.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
