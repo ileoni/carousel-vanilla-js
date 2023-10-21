@@ -1,0 +1,37 @@
+.dash {
+    border: var(--dash);
+}
+.wrapper__carousel {
+    margin: 8px 0;
+    padding: 16px 0;
+    display: grid;
+    background: var(--black);
+    border-radius: 16px 0 0 16px;
+}
+.carousel {
+    user-select: none;
+    cursor: pointer;
+    width: 90%;
+    overflow-x: scroll;
+    justify-self: end;
+}
+.carousel--grab {
+    cursor: grabbing;
+}
+.carousel::-webkit-scrollbar
+{
+    height: 1px;
+}
+.carousel__images {
+    display: grid;
+    grid-auto-columns: calc(300px - 8px);
+    grid-auto-rows: calc(300px - 8px);
+    grid-auto-flow: column;
+    gap: 16px;
+}
+img {
+    object-fit: cover;
+    border-radius: 16px;
+    height: 100%;
+    width: 100%;
+}

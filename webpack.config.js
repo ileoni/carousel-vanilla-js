@@ -15,17 +15,18 @@ module.exports = {
     plugins: [
         new HTMLWebpackPlugin({
             filename: "index.html",
-            template: "./public/index.html"
-        }),
-        new MiniCssExtractPlugin({
-            filename: "assets/css/main.css"
+            template: "./public/index.html",
         })
     ],
     module: {
         rules: [
             {
                 test: /\.css$/i,
-                use: [MiniCssExtractPlugin.loader, "css-loader"]
+                loader: "css-loader",
+                options: {
+                    url: true,
+                    import: true
+                }
             },
             {
                 test: /\.(jpg|png)$/i,
