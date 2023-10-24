@@ -1,0 +1,31 @@
+.gallery__card {
+    height: 100%;
+}
+.g-card__icon {
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+    position: absolute;
+    inset: 8px auto;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #CED4DA;
+    color: var(--white);
+}
+.gallery__card--pin .g-card__icon {
+    background: var(--bg-accent);
+}
+.g-card__icon svg {
+    height: 24px;
+}
+.g-card__icon path {
+    fill: #E9ECEF;
+}
+img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+}

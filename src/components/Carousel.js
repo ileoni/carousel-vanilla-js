@@ -2,6 +2,7 @@ import { Component } from "../lib/Component";
 import styles from "./Carousel.css"; 
 import Cyberpunk from "../assets/img/cyberpunk.jpg";
 import Slide from "../lib/Slide";
+import { LocalStorage } from "../util/LocalStorage";
 
 export class Carousel extends Component
 {
@@ -19,6 +20,23 @@ export class Carousel extends Component
         slide.vertical = false;
         slide.activated()
     }
+
+    elementFromHTML()
+    {
+        const storage = new LocalStorage();
+        const records = storage.all('gallery');
+
+        let html = "";
+        for(let record of records) {
+            if(record.pin) {
+                html += `
+                    <img src="${record.path}" alt="" draggable="false"/>
+                `;
+            }
+        }
+
+        return html;
+    }
     
     view()
     {
@@ -26,27 +44,12 @@ export class Carousel extends Component
             <div class="wrapper__carousel dash">
                 <div class="carousel">
                     <div class="carousel__images">
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
+                        ${this.elementFromHTML()}
                     </div>
                 </div>
             </div>
         `;
     }
 }
-
-
-{/* <img src="${Cyberpunk}" alt="" />
-<img src="${Cyberpunk}" alt="" />
-<img src="${Cyberpunk}" alt="" />
-<img src="${Cyberpunk}" alt="" />
-<img src="${Cyberpunk}" alt="" />
-<img src="${Cyberpunk}" alt="" />
-<img src="${Cyberpunk}" alt="" />
-<img src="${Cyberpunk}" alt="" />
-<img src="${Cyberpunk}" alt="" /> */}
 
 customElements.define('component-carousel', Carousel, {extends: "div"});

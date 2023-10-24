@@ -1,7 +1,9 @@
 import { Component } from "../lib/Component";
 import styles from './Gallery.css';
-import Cyberpunk from '../assets/img/cyberpunk.jpg';
 import Slide from "../lib/Slide";
+import Cyberpunk from "../assets/img/cyberpunk.jpg";
+import thumbtack from "../assets/svg/thumbtack.svg"
+import { LocalStorage } from "../util/LocalStorage";
 
 export class Gallery extends Component
 {
@@ -23,6 +25,19 @@ export class Gallery extends Component
     {
         this.setAttribute('open', value);
     }
+
+    toPin()
+    {
+        const storage = new LocalStorage();
+        const pins = this.shadowRoot.querySelectorAll('[to-pin]');
+
+        for(let pin of pins) {
+            pin.addEventListener('click', ({target}) => {
+                const {id} = target.closest('.gallery__card');
+                storage.updatePin('gallery', id);
+            })    
+        }
+    }
     
     effect()
     {
@@ -37,8 +52,28 @@ export class Gallery extends Component
         const slide = new Slide();
         slide.element = this.shadowRoot.querySelector('.gallery__body');
         slide.activated()
+        
+        this.toPin()
     }
 
+    elementFromHTML()
+    {
+        const storage = new LocalStorage();
+        const records = storage.all('gallery');
+        
+        let html = "";
+        for(let record of records) {
+            const pin = record.pin ? "gallery__card--pin": "";
+            html += `
+                <div id="${record.id}" class="gallery__card ${pin}">
+                    <span class="g-card__icon" to-pin>${thumbtack}</span>
+                    <img src="${record.path}" alt="" draggable="false"/>
+                </div>
+            `;
+        }
+
+        return html;
+    }
 
     view()
     {
@@ -49,18 +84,7 @@ export class Gallery extends Component
                         <h4>Gallery</h4>
                     </div>
                     <div class="gallery__body">
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
-                        <img src="${Cyberpunk}" alt="" draggable="false"/>
+                        ${this.elementFromHTML()}
                     </div>
                 </div>
             </div>

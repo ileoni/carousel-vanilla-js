@@ -30,6 +30,12 @@ small {
     position: relative;
     justify-self: end;
 }
+.dropzone {
+    position: absolute;
+    inset: 0;
+    background: red;
+    z-index: -1;
+}
 .overlay {
     position: absolute;
     inset: 0;
