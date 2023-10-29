@@ -1,9 +1,8 @@
 import { Component } from "../lib/Component";
-import styles from './Gallery.css';
-import Slide from "../lib/Slide";
-import Cyberpunk from "../assets/img/cyberpunk.jpg";
-import thumbtack from "../assets/svg/thumbtack.svg"
 import { LocalStorage } from "../util/LocalStorage";
+import styles from './Gallery.css';
+import thumbtack from '../assets/svg/thumbtack.svg'
+import Slide from "../lib/Slide";
 
 export class Gallery extends Component
 {
@@ -11,68 +10,50 @@ export class Gallery extends Component
     {
         super();
         this.styles = styles;
-        this.open = false;
+
+        this.slide = new Slide();
+
+        this.storage = new LocalStorage();
+        this.data.subscribe(this.show.bind(this))
     }
 
-    static observedAttributes = ['open'];
-
-    get open()
-    {
-        return this.getAttribute('open');
-    }
-
-    set open(value)
-    {
-        this.setAttribute('open', value);
-    }
-
-    toPin()
-    {
-        const storage = new LocalStorage();
-        const pins = this.shadowRoot.querySelectorAll('[to-pin]');
-
-        for(let pin of pins) {
-            pin.addEventListener('click', ({target}) => {
-                const {id} = target.closest('.gallery__card');
-                storage.updatePin('gallery', id);
-            })    
-        }
-    }
-    
     effect()
     {
-        const gallery = this.shadowRoot.querySelector('.wrapper__gallery');
-        
-        if(this.open !== "false") {
-            gallery.classList.add('wrapper__gallery--open');
-        } else {
-            gallery.classList.remove('wrapper__gallery--open');
-        }
+        this.slide.element = this.shadowRoot.querySelector('.gallery__body');
+        this.slide.activated();
 
-        const slide = new Slide();
-        slide.element = this.shadowRoot.querySelector('.gallery__body');
-        slide.activated()
-        
-        this.toPin()
+        const pins =[...this.shadowRoot.querySelectorAll('[to-pin]')];
+        pins.map(pin => {
+            pin.addEventListener('click', ({target}) => {
+                const parent = target.closest('.gallery__card');
+                const toggle = parent.classList.contains('g-card--activated');
+                parent.classList.toggle('g-card--activated', !toggle);
+                this.storage.updatePin('gallery', parent.id);
+                this.data.notify(true);
+            })
+        })   
     }
 
-    elementFromHTML()
+    show(value)
     {
-        const storage = new LocalStorage();
-        const records = storage.all('gallery');
-        
-        let html = "";
-        for(let record of records) {
-            const pin = record.pin ? "gallery__card--pin": "";
-            html += `
-                <div id="${record.id}" class="gallery__card ${pin}">
+        const gallery = this.shadowRoot.querySelector('.wrapper__gallery');
+        gallery.classList.toggle('w-gallery--show', value)
+    }
+
+    elemenstFromHtml()
+    {
+        const records = this.storage.all('gallery');
+
+        const template = ({id, path, pin}) => {
+            return `
+                <div class="gallery__card ${pin ? "g-card--activated": ""}" id=${id}>
                     <span class="g-card__icon" to-pin>${thumbtack}</span>
-                    <img src="${record.path}" alt="" draggable="false"/>
+                    <img src=${path} alt="" draggable="false"/>
                 </div>
             `;
         }
-
-        return html;
+    
+        return records.map(template).join('');
     }
 
     view()
@@ -84,7 +65,7 @@ export class Gallery extends Component
                         <h4>Gallery</h4>
                     </div>
                     <div class="gallery__body">
-                        ${this.elementFromHTML()}
+                        ${this.elemenstFromHtml()}
                     </div>
                 </div>
             </div>

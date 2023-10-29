@@ -62,11 +62,13 @@ export class App extends Component
                 <section class="wrapper__body">
                     <div is="component-button"></div>
                     <div is="component-carousel"></div>
-                    <div is="component-gallery" count="${this.count}"></div>
+                    <div is="component-gallery"></div>
                 </section>
             </div>
         `;
     }
 }
+
+{/* <div is="component-carousel"></div> */}
 
 customElements.define('root-app', App, {extends: "div"})

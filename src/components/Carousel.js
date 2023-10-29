@@ -11,20 +11,28 @@ export class Carousel extends Component
         super();
         this.styles = styles;
         this.toggle = false;
+
+        this.slide = new Slide();
+        
+        this.storage = new LocalStorage();
+        this.data.subscribe(this.updateRender.bind(this));
     }
 
     effect()
+    {   
+        this.slide.element = this.shadowRoot.querySelector('.carousel');
+        this.slide.vertical = false;
+        this.slide.activated();
+    }
+
+    updateRender()
     {
-        const slide = new Slide();
-        slide.element = this.shadowRoot.querySelector('.carousel');
-        slide.vertical = false;
-        slide.activated()
+        this.render();
     }
 
     elementFromHTML()
     {
-        const storage = new LocalStorage();
-        const records = storage.all('gallery');
+        const records = this.storage.all('gallery');
 
         let html = "";
         for(let record of records) {
@@ -37,7 +45,7 @@ export class Carousel extends Component
 
         return html;
     }
-    
+
     view()
     {
         return `

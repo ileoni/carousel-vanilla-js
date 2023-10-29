@@ -1,3 +1,5 @@
+import { DataObservable } from "./DataObservable";
+
 export class Component extends HTMLDivElement
 {
     constructor()
@@ -5,16 +7,19 @@ export class Component extends HTMLDivElement
         super();
         this.attachShadow({mode: "open"});
         this.styles = "";
+        this.data = DataObservable.getInstance();
     }
 
     attributeChangedCallback()
     {
+        console.log('Updated')
         this.render();
         this.effect();
     }
 
     connectedCallback()
     {
+        console.log('Created')
         this.render();
         this.effect();
     }
@@ -26,10 +31,6 @@ export class Component extends HTMLDivElement
         const sheet = new CSSStyleSheet();
         sheet.replaceSync(this.styles.toString());
         this.shadowRoot.adoptedStyleSheets = [sheet];
-        
-        // const style = document.createElement('style');
-        // style.textContent = this.styles.toString();
-        // this.shadowRoot.appendChild(style);
     }
 
     effect() {}
