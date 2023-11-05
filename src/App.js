@@ -1,58 +1,53 @@
-import styles from "./App.css";
 import { Component } from './lib/Component';
 import { Draggable } from "./lib/Draggable";
-import { Button } from "./components/Button";
-import { Carousel } from "./components/Carousel";
-import { Gallery } from "./components/Gallery";
 import { LocalStorage } from "./util/LocalStorage";
+
+import { Button } from "./components/Button";
+import { Carousel } from "./components/carousel/Carousel";
+import { Gallery } from "./components/Gallery";
 
 export class App extends Component
 {
     constructor()
     {
         super();
-        this.styles = styles;
+
         this.storage = new LocalStorage();
-        this.drag = new Draggable(this.shadowRoot);
-    }
-    
-    async handlerPromise(files)
-    {
-        let records = [];
-        for(let file of files) {
-            records.push(
-                await new Promise(resolver => {
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        resolver({
-                            id: this.storage.hash(4),
-                            path: reader.result,
-                            pin: false,
-                        });
-                    }
-                    reader.readAsDataURL(file);
-                })
-            );
-        }
-        return records;
-    }
-    
-    effect()
-    {
-        this.drag
+
+        const draggable = new Draggable(this.shadowRoot);
+        draggable
             .handlerPreventDefault()
-            .handlerDrop( async ({dataTransfer}) => {
-                const { files } = dataTransfer;
-                const records = await this.handlerPromise(files);
-                if(this.storage.size('gallery', records)) {
-                    this.storage.save('gallery', records);
-                }
-            });
+            .handlerDrop(this.drop.bind(this));
     }
 
-    view()
+    async handlerPromise(records)
     {
-        return `
+        let data = [];
+        for(let record of records) {
+            const result = await new Promise(resolve => {
+                const read = new FileReader();
+                read.onload = () => resolve({
+                    id: this.storage.hash(5),
+                    mime: read.result,
+                    pin: false
+                });
+                read.readAsDataURL(record);
+            })
+            data.push(result);
+        }
+        return data;
+    }
+
+    async drop({dataTransfer})
+    {
+        this.storage
+            .save('gallery', await this.handlerPromise(dataTransfer.files));
+        this.pubsub.publish('galleryAdded', true);
+    }
+    
+    render()
+    {
+        this.shadowRoot.innerHTML = `
             <div class="wrapper">
                 <div class="overlay"></div>
                 <header class="wrapper__header">
@@ -67,8 +62,74 @@ export class App extends Component
             </div>
         `;
     }
+    
+    styles()
+    {
+        return `
+            .dash {
+                border: 1px dashed;
+            }
+            h1 {
+                margin: 0;
+                font-family: "Montserrat", sans-serif;
+                font-weight: 600;
+            }
+            small {
+                font-family: "Roboto", sans-serif;
+                font-weight: 400;
+            }
+            .wrapper {
+                margin-left: 16px;
+                height: 100vh;
+                display: grid;
+                grid-template-rows: auto 1fr;
+            }
+            .wrapper__header {
+                padding: 16px 0;
+                width: 80%;
+                justify-self: center;
+            }
+            .wrapper__body {
+                padding: 8px 0;
+                width: 90%;
+                position: relative;
+                justify-self: end;
+            }
+            .dropzone {
+                position: absolute;
+                inset: 0;
+                background: red;
+                z-index: -1;
+            }
+            .overlay {
+                position: absolute;
+                inset: 0;
+                clip-path: polygon(100% 17%, 100% 100%, 11% 100%, 8% 89%);
+                background: var(--bg-accent);
+            }
+            @media (max-width: 600px) {
+                .wrapper__header,
+                .wrapper__body {
+                    width: 100%;
+                }   
+            }
+        `;
+    }
 }
 
-{/* <div is="component-carousel"></div> */}
+
+
+{/* <div class="wrapper">
+<div class="overlay"></div>
+<header class="wrapper__header">
+    <h1>Preview Carousel</h1>
+    <small>drag and drop images to gallery anywhere</small>
+</header>
+<section class="wrapper__body">
+    <div is="component-button"></div>
+    <div is="component-carousel"></div>
+    <div is="component-gallery"></div>
+</section>
+</div> */}
 
 customElements.define('root-app', App, {extends: "div"})

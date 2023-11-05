@@ -1,62 +1,96 @@
 import { Component } from "../lib/Component";
-import styles from './GalleryCard.css';
 import thumbtack from "../assets/svg/thumbtack.svg"
-import { DataObservable } from "../lib/DataObservable";
 import { LocalStorage } from "../util/LocalStorage";
 
 export class GalleryCard extends Component
 {
     constructor()
     {
-        super()
-        this.styles = styles;
-        this.data = DataObservable.getInstance();
+        super();
+
+        this.pubsub
+            .subscribe('galleryAdded', this.galleryAdded.bind(this));
     }
 
-    static observedAttributes = ['pin'];
-
-    get id()
+    toggleClass({classList}, name)
     {
-        return this.getAttribute('id')
+        const hasClass = classList.contains(name);
+        classList.toggle(name, !hasClass);
     }
 
-    get path()
+    galleryAdded()
     {
-        return this.getAttribute('path')
+        this.render();
     }
 
-    get pin()
-    {
-        return this.getAttribute('pin')
-    }
-
-    effect()
-    {
-        this.handlerClick();
-    }
-
-    handlerClick()
+    render()
     {
         const storage = new LocalStorage();
-        const pins = [...this.shadowRoot.querySelectorAll('[to-pin]')];
+        const records = storage.all('gallery');
 
+        this.shadowRoot.innerHTML = records.map(({id, mime, pin}) => (`
+            <div 
+                id=${id} 
+                class="gallery__card ${pin ? "g-card--activated": ""}" 
+                parent
+            >
+                <span class="g-card__icon" to-pin>${thumbtack}</span>
+                <img src=${mime} alt="" draggable="false"/>
+            </div>
+        `)).join('');
+
+        const pins = [...this.shadowRoot.querySelectorAll('[to-pin]')];
         pins.map(pin => {
             pin.addEventListener('click', ({target}) => {
-                const parent = target.closest('.gallery__card');
-                
-                // parent.classList.toggle('gallery__card--pin')
+                const parent = target.closest('[parent]');
                 storage.updatePin('gallery', parent.id);
+                this.toggleClass(parent,'g-card--activated');
+                this.pubsub.publish('carouselUpdated', true);
             })
         })
     }
 
-    view()
+    styles()
     {
         return `
-            <div class="gallery__card ${this.pin ? "gallery__card--pin": ""}" id=${this.id}>
-                <span class="g-card__icon" to-pin>${thumbtack}</span>
-                <img src="${this.path}" alt="" draggable="false" />
-            </div>
+            .dash {
+                border: var(--dash);
+            }
+            .gallery__card {
+                position: relative;
+                grid-row-end: span var(--min-span);
+            }
+            .gallery__card:nth-child(4n + 4) {
+                grid-row-end: span var(--max-span);
+            }
+            .g-card__icon {
+                height: 30px;
+                width: 30px;
+                cursor: pointer;
+                position: absolute;
+                inset: 8px auto;
+                right: 8px;
+                display: grid;
+                place-items: center;
+                border-radius: 50%;
+                background: #CED4DA;
+                color: var(--white);
+            }
+            .g-card--activated .g-card__icon {
+                background: var(--bg-accent);
+            }
+            .g-card__icon svg {
+                height: 24px;
+            }
+            .g-card__icon path {
+                fill: #E9ECEF;
+            }
+            img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+                border-radius: 16px;
+            }
         `;
     }
 }

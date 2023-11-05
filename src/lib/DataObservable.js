@@ -6,8 +6,7 @@ class Data
     {
         if(instance) throw new Error("Você não pode criar uma nova instâcia");
         instance = this;
-        this.observer = [];
-        this.state = {};
+        this._observer = [];
     }
 
     getInstance()
@@ -17,17 +16,17 @@ class Data
 
     subscribe(fn)
     {
-        this.observer.push(fn);
+        this._observer.push(fn);
     }
 
     unsubscribe(fn)
     {
-        this.observer = [...this.observer.filter(fun => fun != fn)];
+        this._observer = [...this._observer.filter(fun => fun != fn)];
     }
 
     notify(data)
     {
-        this.observer.map(fn => fn(data));
+        this._observer.map(fn => fn(data));
     }
 }
 

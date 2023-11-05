@@ -14,7 +14,6 @@ export class LocalStorage
             hash += letter.at(Math.floor(Math.random() * letter.length));
             count++;
         }
-        console.log(hash)
         return hash;
     }
 
@@ -45,17 +44,6 @@ export class LocalStorage
         return JSON.parse(records);
     }
 
-    updatePin(key, id)
-    {
-        const records = this.all(key);
-        records.filter((record) => {
-            if(record.id === id) record.pin = !record.pin;
-        });
-
-        const ajusted = JSON.stringify(records);
-        localStorage.setItem(key, ajusted);
-    }
-
     save(key, value)
     {
         const records = this.all(key);
@@ -70,4 +58,22 @@ export class LocalStorage
         const ajusted = JSON.stringify(data);
         this.storage.setItem(key, ajusted);
     }
+
+    isFixed(key)
+    {
+        const records = this.all(key);
+        return records.filter(({pin}) => pin !== false);
+    }
+
+    updatePin(key, id)
+    {
+        const records = this.all(key);
+        records.filter((record) => {
+            if(record.id === id) record.pin = !record.pin;
+        });
+
+        const ajusted = JSON.stringify(records);
+        localStorage.setItem(key, ajusted);
+    }
+
 }
