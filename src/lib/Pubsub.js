@@ -1,6 +1,6 @@
 let instance;
 
-export class PubSub
+class PubSub
 {
     constructor()
     {

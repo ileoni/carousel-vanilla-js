@@ -1,6 +1,3 @@
-.dash {
-    border: var(--dash);
-}
 .wrapper__carousel {
     margin: 8px 0;
     padding: 16px 0;
@@ -22,16 +19,10 @@
 {
     height: 1px;
 }
-.carousel__images {
+[is=component-carousel-card] {
     display: grid;
     grid-auto-columns: calc(300px - 8px);
     grid-auto-rows: calc(300px - 8px);
     grid-auto-flow: column;
     gap: 16px;
-}
-img {
-    object-fit: cover;
-    border-radius: 16px;
-    height: 100%;
-    width: 100%;
 }

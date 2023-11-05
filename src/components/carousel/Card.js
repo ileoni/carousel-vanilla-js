@@ -1,5 +1,6 @@
+import styles from './Card.css';
 import { Component } from "../../lib/Component";
-import { LocalStorage } from "../../util/LocalStorage";
+import { LocalStorage } from "../../lib/LocalStorage";
 
 export class Card extends Component
 {
@@ -30,14 +31,7 @@ export class Card extends Component
 
     styles()
     {
-        return `
-            img {
-                object-fit: cover;
-                border-radius: 16px;
-                height: 100%;
-                width: 100%;
-            }
-        `;
+        return styles.toString();
     }
 }
 

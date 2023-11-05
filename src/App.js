@@ -1,10 +1,11 @@
+import styles from './App.css';
 import { Component } from './lib/Component';
 import { Draggable } from "./lib/Draggable";
-import { LocalStorage } from "./util/LocalStorage";
+import { LocalStorage } from "./lib/LocalStorage";
 
-import { Button } from "./components/Button";
+import { Button } from "./components/button/Button";
 import { Carousel } from "./components/carousel/Carousel";
-import { Gallery } from "./components/Gallery";
+import { Gallery } from "./components/gallery/Gallery";
 
 export class App extends Component
 {
@@ -65,55 +66,7 @@ export class App extends Component
     
     styles()
     {
-        return `
-            .dash {
-                border: 1px dashed;
-            }
-            h1 {
-                margin: 0;
-                font-family: "Montserrat", sans-serif;
-                font-weight: 600;
-            }
-            small {
-                font-family: "Roboto", sans-serif;
-                font-weight: 400;
-            }
-            .wrapper {
-                margin-left: 16px;
-                height: 100vh;
-                display: grid;
-                grid-template-rows: auto 1fr;
-            }
-            .wrapper__header {
-                padding: 16px 0;
-                width: 80%;
-                justify-self: center;
-            }
-            .wrapper__body {
-                padding: 8px 0;
-                width: 90%;
-                position: relative;
-                justify-self: end;
-            }
-            .dropzone {
-                position: absolute;
-                inset: 0;
-                background: red;
-                z-index: -1;
-            }
-            .overlay {
-                position: absolute;
-                inset: 0;
-                clip-path: polygon(100% 17%, 100% 100%, 11% 100%, 8% 89%);
-                background: var(--bg-accent);
-            }
-            @media (max-width: 600px) {
-                .wrapper__header,
-                .wrapper__body {
-                    width: 100%;
-                }   
-            }
-        `;
+        return styles.toString();
     }
 }
 

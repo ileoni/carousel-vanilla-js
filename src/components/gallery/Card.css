@@ -1,5 +1,9 @@
 .gallery__card {
-    height: 100%;
+    position: relative;
+    grid-row-end: span var(--min-span);
+}
+.gallery__card:nth-child(4n + 4) {
+    grid-row-end: span var(--max-span);
 }
 .g-card__icon {
     height: 30px;
@@ -14,7 +18,7 @@
     background: #CED4DA;
     color: var(--white);
 }
-.gallery__card--pin .g-card__icon {
+.g-card--activated .g-card__icon {
     background: var(--bg-accent);
 }
 .g-card__icon svg {

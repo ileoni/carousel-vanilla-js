@@ -1,5 +1,4 @@
-import { DataObservable } from "./DataObservable";
-import { PubSub, PubSubSingleton } from "./Pubsub";
+import { PubSubSingleton } from "./Pubsub";
 
 export class Component extends HTMLDivElement
 {
